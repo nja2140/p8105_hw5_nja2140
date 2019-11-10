@@ -117,4 +117,22 @@ sim_again =
   select(-output_lists) %>% 
   unnest(estimate_dfs)
 ```
+```{r}
+sim_again %>% 
+  filter(beta1_p<=0.05) %>% 
+  group_by(beta1_hat) %>% 
+  summarize(null_rejected = mean(beta1_p)) %>% 
+  ggplot(aes(x = beta1_hat, y = null_rejected)) +
+  geom_point(color = "pink") +
+  labs(
+  title = "Association between effect size and power",
+  x = "True value of Beta2",
+  y = "Power of the test"
+  )
+```
+From the plot, we can see that the relationship between effect size and power is directly proportional. As effect size increases, power also increases.
+
+```{r}
+
+```
 
