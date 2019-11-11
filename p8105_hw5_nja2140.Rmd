@@ -66,7 +66,8 @@ plot_one =
     values_to = "observation"
   ) %>% 
   ggplot(aes(x = week, y = observation, color = treatment_arm, group=subject_id)) +
-         geom_point() + geom_line() +
+  geom_point() + 
+  geom_line() +
   labs(
   title = "Observation value over time per subject",
   x = "Week Number",
@@ -110,7 +111,7 @@ Repeat the above for β1={1,2,3,4,5,6}, and complete the following
 
 ```{r}
 sim_again =  
-  tibble(beta1_2 = c(1,2,3,4,5,6)) %>% 
+  tibble(beta1_2 = c(0,1,2,3,4,5,6)) %>% 
   mutate(
     output_lists =  map(.x = beta1_2, ~rerun(10000, sim_regression(beta1 = .x))),
     estimate_dfs = map(output_lists, bind_rows)) %>% 
@@ -119,7 +120,7 @@ sim_again =
 ```
 ```{r}
 sim_again %>% 
-  mutate(reject_H0 = as.numeric(ifelse(beta1_p<= 0.05, "1", "0"))) %>% 
+  mutate(reject_H0 = as.numeric(ifelse(beta1_p< 0.05, "1", "0"))) %>% 
   group_by(beta1_2) %>% 
   summarize(power = mean(reject_H0)) %>% 
   ggplot(aes(x = beta1_2, y = power)) +
@@ -148,7 +149,7 @@ sim_again %>%
 ```
 ```{r}
 sim_again %>% 
-  mutate(reject_H0 = as.numeric(ifelse(beta1_p<= 0.05, "1", "0"))) %>% 
+  mutate(reject_H0 = as.numeric(ifelse(beta1_p< 0.05, "1", "0"))) %>% 
   filter(reject_H0 == 1) %>% 
   group_by(beta1_2) %>% 
   summarize(avg_beta1hat = mean(beta1_hat)) %>% 
@@ -161,4 +162,4 @@ sim_again %>%
   y = "Power of the test"
   )
 ```
-
+The sample average of beta1 hat across tests for which the null is rejected are not approximately equal to  the true  value of beta1. 
